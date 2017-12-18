@@ -9,7 +9,7 @@ theamount=2
 theamountsave=2
 thecounter=2
 thecounter2=1
-stored={'0,0':1, '1,1':1, '-1,1':2}
+stored={'0,0':1, '1,0':1, '-1,1':2}
 
 def thenumber(a,b):
 
@@ -17,19 +17,26 @@ def thenumber(a,b):
 
     if (stored.get(str(a+1)+","+str(b))):
         thesum = thesum+(stored.get(str(a+1)+","+str(b)))
+        print("1 "+str(thesum))
     if (stored.get(str(a)+","+str(b+1))):
         thesum = thesum+(stored.get(str(a)+","+str(b+1)))
+        print("2 "+str(thesum))
     if (stored.get(str(a)+","+str(b-1))):
         thesum = thesum+(stored.get(str(a)+","+str(b-1)))
+        print("3 "+str(thesum))
     if (stored.get(str(a+1)+","+str(b+1))):
         thesum = thesum+(stored.get(str(a+1)+","+str(b+1)))
+        print("4 "+str(thesum))
     if (stored.get(str(a-1)+","+str(b-1))):
         thesum = thesum+(stored.get(str(a-1)+","+str(b-1)))
+        print("5 "+str(thesum))
     if (stored.get(str(a+1)+","+str(b-1))):
         thesum = thesum+(stored.get(str(a+1)+","+str(b-1)))
+        print("6 "+str(thesum))
     if (stored.get(str(a-1)+","+str(b+1))):
         thesum = thesum+(stored.get(str(a-1)+","+str(b+1)))
-    print (thesum)
+        print("7 "+str(thesum))
+    print ("the sum: "+str(thesum))
     print ("")
     return thesum
 
