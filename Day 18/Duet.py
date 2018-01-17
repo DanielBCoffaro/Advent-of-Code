@@ -52,7 +52,7 @@ while x < len(instructions):
             thesound=registers[instructions[x][1]]
         else:
             thesound=int(instructions[x][1])
-            
+
     elif instructions[x][0]=='set':
         setit(registers,instructions[x][1],thenum)
     elif instructions[x][0]=='add':
@@ -69,4 +69,4 @@ while x < len(instructions):
         if (jgz(x,int(registers[instructions[x][1]]),thenum)):
             x=jgz(x,int(registers[instructions[x][1]]),thenum)
 
-    x=x+1x)
+    x=x+1

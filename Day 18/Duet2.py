@@ -12,19 +12,61 @@ def mul(registers,x,y):
 def modit(registers,x,y):
     registers[x]=registers[x]%y
     return registers
-def rcv(sound,x):
-    if x != 0:
-        return sound
-    else:
-        print("skip")
-        return False
+def rcv(que,registers,x):
+    registers[x]=que[len(que)-1]
+    print("Before "+str(que))
+    que = que[:-1]
+    print("After "+str(que))
+    print(que)
 def jgz(currentpos,x,y):
     if x != 0:
+        print(x)
         print("jump "+str(y))
         return  ((currentpos)+y)-1
     else:
         print("skip")
         return False
+
+def actions(instructions,theprogram,theotherprogram):
+
+    while theprogram.x < len(instructions):
+        if instructions[theprogram.x][1] not in theprogram.registers:
+            theprogram.registers[instructions[theprogram.x][1]]=0
+
+        if instructions[theprogram.x][0]=='set' or  instructions[theprogram.x][0]=='add' or instructions[theprogram.x][0]=='mul' or instructions[theprogram.x][0]=='mod' or instructions[theprogram.x][0]=='jgz':
+            if instructions[theprogram.x][2] in theprogram.registers:
+                thenum=int(theprogram.registers[instructions[theprogram.x][2]])
+            else:
+                thenum=int(instructions[theprogram.x][2])
+
+        if instructions[theprogram.x][0]=='snd':
+            if instructions[theprogram.x][1] in theprogram.registers:
+                theotherprogram.que.insert(0,theprogram.registers[instructions[theprogram.x][1]])
+            else:
+                theotherprogramque.insert(0,(int(instructions[theprogram.x][1])))
+
+        elif instructions[theprogram.x][0]=='set':
+            setit(theprogram.registers,instructions[theprogram.x][1],thenum)
+        elif instructions[theprogram.x][0]=='add':
+            addit(theprogram.registers,instructions[theprogram.x][1],thenum)
+        elif instructions[theprogram.x][0]=='mul':
+            mul(theprogram.registers,instructions[theprogram.x][1],thenum)
+        elif instructions[theprogram.x][0]=='mod':
+            modit(theprogram.registers,instructions[theprogram.x][1],thenum)
+        elif instructions[theprogram.x][0]=='rcv':
+            if theprogram.que:
+                rcv(theprogram.que,theprogram.registers,instructions[theprogram.x][1])
+                theprogram.waiting=False
+            else:
+                theprogram.waiting=True
+                break
+        elif instructions[theprogram.x][0]=='jgz':
+            if (jgz(theprogram.x,int(theprogram.registers[instructions[theprogram.x][1]]),thenum)):
+                theprogram.x=jgz(theprogram.x,int(theprogram.registers[instructions[theprogram.x][1]]),thenum)
+        theprogram.x=theprogram.x+1
+
+
+
 
 thefile  = open("input.txt", "r")
 thedata= thefile.read()
@@ -33,40 +75,24 @@ instructions = thedata[:-1]
 for x in range(0,len(instructions)):
     instructions[x]=instructions[x].split()
 
-registers={}
-thesound=0
-x=0
-while x < len(instructions):
-    print(instructions[x])
-    if instructions[x][1] not in registers:
-        registers[instructions[x][1]]=0
+class Theprogram:
+    def __init__(self):
+        self.registers={}
+        self.que=[]
+        self.waiting=False
+        self.x=0
 
-    if instructions[x][0]=='set' or  instructions[x][0]=='add' or instructions[x][0]=='mul' or instructions[x][0]=='mod' or instructions[x][0]=='jgz':
-        if instructions[x][2] in registers:
-            thenum=int(registers[instructions[x][2]])
-        else:
-            thenum=int(instructions[x][2])
+program0=Theprogram()
+program1=Theprogram()
+program0.registers["p"]=0
+program1.registers["p"]=1
 
-    if instructions[x][0]=='snd':
-        if instructions[x][1] in registers:
-            thesound=registers[instructions[x][1]]
-        else:
-            thesound=int(instructions[x][1])
+while not program0.waiting and not program1.waiting:
+    actions(instructions,program0,program1)
+    print("stop the one")
+    actions(instructions,program1,program0)
+    print("stop the two")
+    break
 
-    elif instructions[x][0]=='set':
-        setit(registers,instructions[x][1],thenum)
-    elif instructions[x][0]=='add':
-        addit(registers,instructions[x][1],thenum)
-    elif instructions[x][0]=='mul':
-        mul(registers,instructions[x][1],thenum)
-    elif instructions[x][0]=='mod':
-        modit(registers,instructions[x][1],thenum)
-    elif instructions[x][0]=='rcv':
-        if (rcv(thesound,int(registers[instructions[x][1]]))):
-            print (thesound)
-            break
-    elif instructions[x][0]=='jgz':
-        if (jgz(x,int(registers[instructions[x][1]]),thenum)):
-            x=jgz(x,int(registers[instructions[x][1]]),thenum)
-
-    x=x+1x)
+print(program0.registers)
+print(program1.registers)
