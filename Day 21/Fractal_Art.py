@@ -46,7 +46,6 @@ def flipNrotate270(pattern):
     return temppattern
 
 def doesitmatch(pattern,inputPattern):
-    print("start")
     if pattern==inputPattern:
         return True
     elif pattern==rotate90(inputPattern):
@@ -64,20 +63,26 @@ def doesitmatch(pattern,inputPattern):
     elif pattern==flipNrotate270(inputPattern):
         return True
     else:
-        # wait = input("PRESS ENTER TO CONTINUE.")
         return False
 
 
-def breakitup(pattern):
+def breakitup(pattern,therules):
+
     if len(pattern[0])%2==0:
-        size=len(pattern[0])/2
-        temppattern=[pattern[0][:2],pattern[1][:2]]
-    elif len(pattern[0])%3==0:
-        size=len(pattern[0])/3
-        temppattern=[pattern[0][:3],pattern[1][:3],pattern[2][:3]]
-    else:
-        print("error")
-    return(size, temppattern)
+        size=int(len(pattern[0]))
+        newpattern=[]
+        thepattern=[]
+        for x in range(0, size, 2):
+            print("clear pattern")
+            partpattern=[]
+            for y in range(0, size, 2):
+                partpattern=([pattern[x][y]+pattern[x][y+1],pattern[x+1][y]+pattern[x+1][y+1]])
+                print(partpattern)
+                for i in range(0,len(therules)):
+                    if (doesitmatch(partpattern,therules[i][0])):
+                        print(therules[i][1])
+                        newpattern.append(therules[i][1])
+            print(newpattern)
 
 
 
@@ -94,25 +99,21 @@ for x in range(0,len(therules)):
         therules[x][y]=therules[x][y].strip().strip().split("/")
 
 pattern=[".#.","..#","###"]
+# pattern=["###.#.#.#","#...#.#.#","#.###.#.#",".#.##.#.#",".#.##.#.#",".#..#.#.#","##.##.#.#",".####.#.#",".#..#.#.#"]
 
-# for x in range(0,len(pattern)):
+
+# for l in range(0,len(pattern)):
 #     print(pattern[x])
 # print()
-print(pattern)
-
-broken=breakitup(pattern)
-size=broken[0]
-pattern=broken[1]
-temppattern=[]
-print(pattern)
+for i in range(5):
+    for l in range(0,len(pattern)):
+        print(pattern[l])
+    print()
+    pattern=breakitup(pattern,therules)
 
 
-for x in range(0,len(therules)):
-    if (doesitmatch(pattern,therules[x][0])):
-        pattern=therules[x][1]
-        temppattern=[]
-        for y in range(0,int(size)):
-            temprow=[]
-            for z in range(0,int(size)):
-                temprow = therules[x][1][z]+temprow
-            temppattern.append(temprow)
+
+thesum=0
+for row in pattern:
+    thesum=row.count("#")+thesum
+print(thesum)
