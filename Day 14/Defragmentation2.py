@@ -46,7 +46,7 @@ def numberchanger(x,y,thenum):
 
 
 number=0
-instructio1n='jxqlasbh-'
+instructio1n='jxqlasbh'
 thelist=[]
 for w in range(0,128):
     thehash=[]
@@ -95,21 +95,40 @@ for w in range(0,128):
     answer=""
     for x in range(0,len(thexorlist)):
         answer=answer+('%.2x' % thexorlist[x])
+
     answer=bin(int(answer, 16))[2:]
     thelist.append(answer)
-thenumber=0
 
-thenum=1
-
-for x in range (0,len(thelist)):
-    thelist[x]=thelist[x].replace('1','a')
-    thelist[x]=list(thelist[x])
-
-for x in range (0,len(thelist)):
+que=[]
+count=0
+for x in range(0,len(thelist)):
     for y in range(0,len(thelist[x])):
-        if thelist[x][y]=='a':
-            numberchanger(x,y,thenum)
-            thenum+=1
-sys.stdout = open("file.txt", "w+")
-for x in range (0,len(thelist)):
-    print ("the num:"str(thenum))
+        if thelist[x][y]=="1":
+            print("here")
+            que.append([x,y])
+            print(que)
+            while que:
+                print(que)
+                current=que.pop()
+                i=current[0]
+                j=current[1]
+                print(i)
+                print(j)
+                if i!=0:
+                    if thelist[i-1][j]==1:
+                        que.append([i-1,j])
+                print(i)
+                print(j)
+                print((len(thelist))-1)
+                if i!=(len(thelist))-1:
+                    if thelist[i+1][j]==1:
+                        que.append([i+1,j])
+                if j!=(len(thelist[i]))-1:
+                    if thelist[i][j+1]==1:
+                        que.append([i,j+1])
+                if j!=0:
+                    if thelist[i][j-1]==1:
+                        que.append([i,j-1])
+                thelist[i][j]=="a"
+            count+=1
+print(count)

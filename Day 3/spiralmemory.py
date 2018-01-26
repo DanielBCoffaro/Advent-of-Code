@@ -51,10 +51,10 @@ while (thenum != 277678):
             # print("switch positve")
 print(abs(a)+abs(b))
 
-    # print("thenum: "+str(thenum))
-    # print("a: "+str(a))
-    # print("b: "+str(b))
-    #
-    # print("thecounter: "+str(thecounter))
-    # print("theamount: "+str(theamount))
-    # print("")
+print("thenum: "+str(thenum))
+print("a: "+str(a))
+print("b: "+str(b))
+
+print("thecounter: "+str(thecounter))
+print("theamount: "+str(theamount))
+print("")

@@ -28,6 +28,7 @@ instructions = thedata[:-1]
 for x in range(0,len(instructions)):
     instructions[x]=instructions[x].split()
 registers={}
+
 thesound=0
 x=0
 howmanymul=0
@@ -68,4 +69,4 @@ while x < len(instructions):
 
     x=x+1
 print()
-print(howmanymul)
+print(registers)
