@@ -1,72 +1,45 @@
+from collections import deque
 import re
 
-def setit(registers,x,y):
-    registers[x]=y
-    return registers
-def addit(registers,x,y):
-    registers[x]=y+registers[x]
-    return registers
-def mul(registers,x,y):
-    registers[x]=y*registers[x]
-    return registers
-def modit(registers,x,y):
-    registers[x]=registers[x]%y
-    return registers
-def rcv(que,registers,x):
-    registers[x]=que[len(que)-1]
-    print("Before "+str(que))
-    que = que[:-1]
-    print("After "+str(que))
-    print(que)
-def jgz(currentpos,x,y):
-    if x != 0:
-        print(x)
-        print("jump "+str(y))
-        return  ((currentpos)+y)-1
-    else:
-        print("skip")
-        return False
+registers_0={"p":0,"counter":0}
+registers_1={"p":1,"counter":0}
+queue_for_0=deque()
+queue_for_1=deque()
 
-def actions(instructions,theprogram,theotherprogram):
+# runs until termination or wait state. Returns False on termination
+def run_program(registers,queue_in,queue_out):
 
-    while theprogram.x < len(instructions):
-        if instructions[theprogram.x][1] not in theprogram.registers:
-            theprogram.registers[instructions[theprogram.x][1]]=0
+    def value(r):
+        if r.isalpha():
+            return registers.get(r,0)
+        else:
+            return int(r)
 
-        if instructions[theprogram.x][0]=='set' or  instructions[theprogram.x][0]=='add' or instructions[theprogram.x][0]=='mul' or instructions[theprogram.x][0]=='mod' or instructions[theprogram.x][0]=='jgz':
-            if instructions[theprogram.x][2] in theprogram.registers:
-                thenum=int(theprogram.registers[instructions[theprogram.x][2]])
-            else:
-                thenum=int(instructions[theprogram.x][2])
+    #first_rcv_done=False
+    while (registers["counter"]>=0) and (registers["counter"]<len(instructions)):
+        theinstruction=instructions[registers["counter"]]
 
-        if instructions[theprogram.x][0]=='snd':
-            if instructions[theprogram.x][1] in theprogram.registers:
-                theotherprogram.que.insert(0,theprogram.registers[instructions[theprogram.x][1]])
-            else:
-                theotherprogramque.insert(0,(int(instructions[theprogram.x][1])))
-
-        elif instructions[theprogram.x][0]=='set':
-            setit(theprogram.registers,instructions[theprogram.x][1],thenum)
-        elif instructions[theprogram.x][0]=='add':
-            addit(theprogram.registers,instructions[theprogram.x][1],thenum)
-        elif instructions[theprogram.x][0]=='mul':
-            mul(theprogram.registers,instructions[theprogram.x][1],thenum)
-        elif instructions[theprogram.x][0]=='mod':
-            modit(theprogram.registers,instructions[theprogram.x][1],thenum)
-        elif instructions[theprogram.x][0]=='rcv':
-            if theprogram.que:
-                rcv(theprogram.que,theprogram.registers,instructions[theprogram.x][1])
-                theprogram.waiting=False
-            else:
-                theprogram.waiting=True
-                break
-        elif instructions[theprogram.x][0]=='jgz':
-            if (jgz(theprogram.x,int(theprogram.registers[instructions[theprogram.x][1]]),thenum)):
-                theprogram.x=jgz(theprogram.x,int(theprogram.registers[instructions[theprogram.x][1]]),thenum)
-        theprogram.x=theprogram.x+1
-
-
-
+        if theinstruction[0]=="rcv":
+            if len(queue_in)==0:
+                return True
+            registers[theinstruction[1]]=queue_in.popleft()
+        if theinstruction[0]=="jgz":
+            if value(theinstruction[1])>0:
+                registers["counter"]+=value(theinstruction[2])
+                continue
+        if theinstruction[0]=="snd":
+            queue_out.append(value(theinstruction[1]))
+            registers["sent"]=value("sent")+1
+        if theinstruction[0]=="set":
+            registers[theinstruction[1]]=value(theinstruction[2])
+        if theinstruction[0]=="add":
+            registers[theinstruction[1]]=value(theinstruction[1])+value(theinstruction[2])
+        if theinstruction[0]=="mul":
+            registers[theinstruction[1]]=value(theinstruction[1])*value(theinstruction[2])
+        if theinstruction[0]=="mod":
+            registers[theinstruction[1]]=value(theinstruction[1])%value(theinstruction[2])
+        registers["counter"]+=1
+    return False
 
 thefile  = open("input.txt", "r")
 thedata= thefile.read()
@@ -75,24 +48,12 @@ instructions = thedata[:-1]
 for x in range(0,len(instructions)):
     instructions[x]=instructions[x].split()
 
-class Theprogram:
-    def __init__(self):
-        self.registers={}
-        self.que=[]
-        self.waiting=False
-        self.x=0
+while True:
+    if not run_program(registers_0,queue_for_0,queue_for_1):
+        break
+    if not run_program(registers_1,queue_for_1,queue_for_0):
+        break
+    if len(queue_for_0)==0 and len(queue_for_1)==0:
+        break
 
-program0=Theprogram()
-program1=Theprogram()
-program0.registers["p"]=0
-program1.registers["p"]=1
-
-while not program0.waiting and not program1.waiting:
-    actions(instructions,program0,program1)
-    print("stop the one")
-    actions(instructions,program1,program0)
-    print("stop the two")
-    break
-
-print(program0.registers)
-print(program1.registers)
+print(registers_1["sent"])

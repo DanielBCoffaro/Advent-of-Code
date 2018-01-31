@@ -20,35 +20,23 @@ print(thedata[0])
 # print(thedata[1][0])
 # print(thedata[2][0])
 thelength=len(thedata)
-for z in range(0,20000):
-    for x in range(0,len(thedata)):
+for z in range(0,100):
+    positions = {}
+    delete = []
+    for i, d in enumerate(thedata):
         # velocity adjustment
-
-
-        thedata[x][1][0]=int(thedata[x][1][0])+int(thedata[x][2][0])
-        thedata[x][1][1]=int(thedata[x][1][1])+int(thedata[x][2][1])
-        thedata[x][1][2]=int(thedata[x][1][2])+int(thedata[x][2][2])
-
+        thedata[i][1][0]=int(thedata[i][1][0])+int(thedata[i][2][0])
+        thedata[i][1][1]=int(thedata[i][1][1])+int(thedata[i][2][1])
+        thedata[i][1][2]=int(thedata[i][1][2])+int(thedata[i][2][2])
         # position adjustment
-        thedata[x][0][0]=int(thedata[x][0][0])+int(thedata[x][1][0])
-        thedata[x][0][1]=int(thedata[x][0][1])+int(thedata[x][1][1])
-        thedata[x][0][2]=int(thedata[x][0][2])+int(thedata[x][1][2])
+        thedata[i][0][0]=int(thedata[i][0][0])+int(thedata[i][1][0])
+        thedata[i][0][1]=int(thedata[i][0][1])+int(thedata[i][1][1])
+        thedata[i][0][2]=int(thedata[i][0][2])+int(thedata[i][1][2])
 
-    destroy = []
-    for x in range(0,len(thedata)):
-        for y in range(0,len(thedata)):
-            if y > x:
-                if thedata[x][0] == thedata[y][0]:
-                    destroy.append(y)
-                    destroy.append(x)
-    destroy=list(set(destroy))
-    # print(destroy)
-    for x in reversed(destroy):
-        # print(x)
-        del thedata[x]
-    if len(thedata)<thelength:
-        thelength=len(thedata)
-        # print(thelength)
-
-print(" ")
-print(thelength)
+        if tuple(d[0]) in positions:
+            delete += [i, positions[tuple(d[0])]]
+        else:
+            positions[tuple(d[0])] = i
+            print (positions)
+    thedata = [d for i, d in enumerate(thedata) if i not in delete]
+    print(len(thedata))

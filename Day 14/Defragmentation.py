@@ -53,7 +53,7 @@ for w in range(0,128):
         answer=answer+('%.2x' % thexorlist[x])
     answer=bin(int(answer, 16))[2:]
     thelist.append(answer)
-
+thesum=0
 for x in range(0,len(thelist)):
     thesum=thesum+thelist[x].count('1')
 print(thesum)

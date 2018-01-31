@@ -46,7 +46,7 @@ def numberchanger(x,y,thenum):
 
 
 number=0
-instructio1n='jxqlasbh'
+instructio1n='jxqlasbh-'
 thelist=[]
 for w in range(0,128):
     thehash=[]
@@ -96,39 +96,35 @@ for w in range(0,128):
     for x in range(0,len(thexorlist)):
         answer=answer+('%.2x' % thexorlist[x])
 
-    answer=bin(int(answer, 16))[2:]
+    answer=bin(int(answer, 16))[2:].zfill(128)
     thelist.append(answer)
+# print(thelist)
+for x in range(0,128):
+    thelist[x]=list(thelist[x])
 
-que=[]
+theones = []
+for x in range(128):
+    for y in range(len(thelist[x])):
+        if thelist[x][y]=='1':
+            theones.append([x,y])
+# print(theones)
+print(len(theones))
 count=0
-for x in range(0,len(thelist)):
-    for y in range(0,len(thelist[x])):
-        if thelist[x][y]=="1":
-            print("here")
-            que.append([x,y])
-            print(que)
-            while que:
-                print(que)
-                current=que.pop()
-                i=current[0]
-                j=current[1]
-                print(i)
-                print(j)
-                if i!=0:
-                    if thelist[i-1][j]==1:
-                        que.append([i-1,j])
-                print(i)
-                print(j)
-                print((len(thelist))-1)
-                if i!=(len(thelist))-1:
-                    if thelist[i+1][j]==1:
-                        que.append([i+1,j])
-                if j!=(len(thelist[i]))-1:
-                    if thelist[i][j+1]==1:
-                        que.append([i,j+1])
-                if j!=0:
-                    if thelist[i][j-1]==1:
-                        que.append([i,j-1])
-                thelist[i][j]=="a"
-            count+=1
+while theones:
+    que=[theones[0]]
+    while que:
+        # print(que)
+        current=que.pop()
+        # print(current)
+        x=current[0]
+        y=current[1]
+        if ([x,y]) in theones:
+            theones.remove([x,y])
+            que.append([x - 1, y])
+            que.append([x+ 1, y])
+            que.append([x, y+1])
+            que.append([x, y-1])
+            # print(que)
+            print(len(theones))
+    count+=1
 print(count)
